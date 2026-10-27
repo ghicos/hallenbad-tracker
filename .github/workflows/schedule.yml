@@ -3,7 +3,7 @@ name: Track Pool Visitors
 on:
   schedule:
     # Runs every 5 minutes between 04:00 and 21:00 UTC (covers 06:00-22:00 Zurich time)
-    - cron: '*/5 4-21 * * *'
+    - cron: '*/5 * * * *'
   workflow_dispatch:
 
 permissions:
