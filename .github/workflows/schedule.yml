@@ -34,7 +34,11 @@ jobs:
         run: |
           git config user.name "Pool Tracker Bot"
           git config user.email "bot@example.com"
-          git pull --rebase
+          
+          # 1. Stage and commit first so the workspace is clean
           git add pool_visitors.csv best_times_heatmap.png
-          git commit -m "Update pool data" || exit 0
+          git commit -m "Update pool data and heatmap" || echo "No changes to commit"
+          
+          # 2. Pull any remote updates safely, then push
+          git pull --rebase || true
           git push
