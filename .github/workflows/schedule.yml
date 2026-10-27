@@ -1,0 +1,40 @@
+name: Track Pool Visitors
+
+on:
+  schedule:
+    # Runs every 5 minutes between 04:00 and 21:00 UTC (covers 06:00-22:00 Zurich time)
+    - cron: '*/5 4-21 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  track:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install libraries
+        run: pip install selenium pandas matplotlib seaborn
+
+      - name: Record visitor count
+        run: python pool_tracker.py
+
+      - name: Update Heatmap
+        run: python visualize.py
+
+      - name: Save updated CSV and Heatmap
+        run: |
+          git config user.name "Pool Tracker Bot"
+          git config user.email "bot@example.com"
+          git pull --rebase
+          git add pool_visitors.csv best_times_heatmap.png
+          git commit -m "Update pool data" || exit 0
+          git push
